@@ -19,7 +19,7 @@ namespace TLVPark
             var lat = double.Parse(latitude);
             var rad = double.Parse(radius);
             var point = new GeoPoint(longt, lat);
-            List<Parking> parkings;
+            List<Parking> parkings; 
             using (var dataAccess = new ParkingDataAccess())
             {
                 parkings = dataAccess.GetParkingsByGeo(point, rad).ToList();
