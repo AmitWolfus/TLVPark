@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
@@ -37,10 +38,11 @@ namespace TLVPark.DataAccess
 
         static ParkingDataAccess()
         {
+            var conn = ConfigurationManager.ConnectionStrings["Prod"];
             // Configure the session factory
             _sessionFactory =
                 Fluently.Configure()
-                        .Database(SQLiteConfiguration.Standard.UsingFile(@"C:\BuizParkDB.db"))
+                        .Database(MySQLConfiguration.Standard.ConnectionString(conn.ConnectionString))
                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<ParkingMap>())
                         .BuildSessionFactory();
             _parkingsCache = new Lazy<IDictionary<int, Parking>>(GetAllParkings);
