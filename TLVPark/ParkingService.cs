@@ -43,7 +43,14 @@ namespace TLVPark
             }
             catch (Exception ex)
             {
-                return new List<Parking>(){new Parking(){Name = ex.GetType().Name, StreetName = ex.Message}};
+                
+                string message = string.Empty;
+                while (ex != null)
+                {
+                    message = string.Format("{0}\nType:{1}\nMessage:{2}", message, ex.GetType().Name, ex.Message);
+                    ex = ex.InnerException;
+                }
+                return new List<Parking>() { new Parking() { Name = message } };
             }
         }
 
