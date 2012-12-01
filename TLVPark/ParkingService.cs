@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Web.Configuration;
@@ -30,12 +32,19 @@ namespace TLVPark
                 return null;
             }
             var point = new GeoPoint(longt, lat);
-            List<Parking> parkings; 
-            using (var dataAccess = new ParkingDataAccess())
+            try
             {
-                parkings = dataAccess.GetParkingsByGeo(point, rad).ToList();
+                List<Parking> parkings;
+                using (var dataAccess = new ParkingDataAccess())
+                {
+                    parkings = dataAccess.GetParkingsByGeo(point, rad).ToList();
+                }
+                return parkings;
             }
-            return parkings;
+            catch (Exception ex)
+            {
+                throw new FaultException(ex.Message);
+            }
         }
 
         [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "Business?businessId={businessId}&businessType={businessType}")]
