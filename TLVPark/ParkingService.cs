@@ -43,8 +43,6 @@ namespace TLVPark
             }
             catch (Exception ex)
             {
-                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.PaymentRequired;
-                WebOperationContext.Current.OutgoingResponse.StatusDescription = "Failed";
                 return new List<Parking>(){new Parking(){Name = ex.GetType().Name, StreetName = ex.Message}};
             }
         }
