@@ -15,12 +15,12 @@ namespace TLVPark.Model
         /// Represents the longtitude of the point
         /// </summary>
         [DataMember]
-        public double Longtitude { get; set; }
+        public virtual double Longtitude { get; set; }
         /// <summary>
         /// Represents the latitude of the point
         /// </summary>
         [DataMember]
-        public double Latitude { get; set; }
+        public virtual double Latitude { get; set; }
 
         #endregion
 

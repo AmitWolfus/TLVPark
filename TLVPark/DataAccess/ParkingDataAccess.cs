@@ -58,7 +58,8 @@ namespace TLVPark.DataAccess
             // Go over all the parkings and calculate the distance
             foreach (var parking in ParkingCache.Values)
             {
-                var distance = parking.Location.Distance(point);
+                var location = new GeoPoint(parking.Longtitude, parking.Latitude);
+                var distance = location.Distance(point);
                 if (distance <= radius)
                 {
                     list.Add(parking);
@@ -89,7 +90,8 @@ namespace TLVPark.DataAccess
                                 Capacity = parking.Capacity,
                                 ID = parking.ID,
                                 Name = parking.Name,
-                                Location = (GeoPoint)parking.Location.Clone()
+                                Longtitude = parking.Longtitude,
+                                Latitude = parking.Latitude
                             });
 
                 }
@@ -128,7 +130,8 @@ namespace TLVPark.DataAccess
                         {
                             Capacity = parking.Capacity,
                             ID = parking.ID,
-                            Location = (GeoPoint)parking.Location.Clone(),
+                            Latitude = parking.Latitude,
+                            Longtitude = parking.Longtitude,
                             Name = parking.Name
                         };
                         dictionary.Add(statelessParking.ID, statelessParking);

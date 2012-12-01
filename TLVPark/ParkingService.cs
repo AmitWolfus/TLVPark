@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
+using System.Web.Configuration;
 using TLVPark.DataAccess;
 using TLVPark.Model;
 
@@ -12,12 +14,21 @@ namespace TLVPark
     {
         #region IParkingService Methods
 
-        [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "ParkingsByGeo({latitude},{longtitude},{radius})")]
+        [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "Parkings?latitude={latitude}&longtitude={longtitude}&radius={radius}")]
         public List<Parking> GetParkingsByGeo(string latitude, string longtitude, string radius)
         {
-            var longt = double.Parse(longtitude);
-            var lat = double.Parse(latitude);
-            var rad = double.Parse(radius);
+            // Convert the request parameters into the right type
+            double longt;
+            double lat;
+            double rad;
+            if (!double.TryParse(longtitude, out longt)
+                || !double.TryParse(latitude, out lat)
+                || !double.TryParse(radius, out rad))
+            {
+                // The parameters aren't of the right type, close the request
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.BadRequest;
+                return new List<Parking>();
+            }
             var point = new GeoPoint(longt, lat);
             List<Parking> parkings; 
             using (var dataAccess = new ParkingDataAccess())
@@ -27,10 +38,15 @@ namespace TLVPark
             return parkings;
         }
 
-        [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "ParkingsByBusiness({businessId},{businessType}")]
+        [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "Parkings?businessId={businessId}&businessType={businessType}")]
         public List<Parking> GetParkingsByBusiness(string businessId, string businessType)
         {
-            var id = int.Parse(businessId);
+            int id;
+            if (!int.TryParse(businessId, out id))
+            {
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.BadRequest;
+                return null;
+            }
             List<Parking> parkings;
             using (var dataAccess = new ParkingDataAccess())
             {

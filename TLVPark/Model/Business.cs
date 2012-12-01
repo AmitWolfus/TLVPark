@@ -25,7 +25,7 @@ namespace TLVPark.Model
         /// Gets the list of the recommended parkings for this business
         /// </summary>
         [DataMember]
-        public virtual List<Parking> RecommendedParkings { get; private set; }
+        public virtual List<Parking> RecommendedParkings { get; protected set; }
         
         [DataMember]
         public virtual BusinessType BusinessType { get; set; }
