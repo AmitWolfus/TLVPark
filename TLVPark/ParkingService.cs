@@ -27,7 +27,7 @@ namespace TLVPark
             {
                 // The parameters aren't of the right type, close the request
                 WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.BadRequest;
-                return new List<Parking>();
+                return null;
             }
             var point = new GeoPoint(longt, lat);
             List<Parking> parkings; 
@@ -38,7 +38,7 @@ namespace TLVPark
             return parkings;
         }
 
-        [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "Parkings?businessId={businessId}&businessType={businessType}")]
+        [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "Business?businessId={businessId}&businessType={businessType}")]
         public List<Parking> GetParkingsByBusiness(string businessId, string businessType)
         {
             int id;
