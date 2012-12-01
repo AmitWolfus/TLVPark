@@ -80,7 +80,6 @@ namespace TLVPark.DataAccess
                                .Add(Restrictions.IdEq(businessId))
                                .List<Business>()
                                .FirstOrDefault();
-                    // TODO: Add more complex logic
                     // Return the recommended parkings for the business or an empty list if there are non available
                     return business == null ? new List<Parking>() :
                         business.RecommendedParkings.Select(
@@ -91,7 +90,9 @@ namespace TLVPark.DataAccess
                                 ID = parking.ID,
                                 Name = parking.Name,
                                 Longtitude = parking.Longtitude,
-                                Latitude = parking.Latitude
+                                Latitude = parking.Latitude,
+                                StreetName = parking.StreetName,
+                                HouseNumber = parking.HouseNumber
                             });
 
                 }
@@ -132,7 +133,9 @@ namespace TLVPark.DataAccess
                             ID = parking.ID,
                             Latitude = parking.Latitude,
                             Longtitude = parking.Longtitude,
-                            Name = parking.Name
+                            Name = parking.Name,
+                            StreetName = parking.StreetName,
+                            HouseNumber = parking.HouseNumber
                         };
                         dictionary.Add(statelessParking.ID, statelessParking);
                     }
