@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace TLVPark.Model
 {
@@ -46,6 +47,8 @@ namespace TLVPark.Model
         /// </summary>
         [DataMember]
         public virtual string HouseNumber { get; set; }
+
+        public virtual IList<Business> Businesses { get; set; }
 
         #endregion
     }

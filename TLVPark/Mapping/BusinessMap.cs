@@ -7,8 +7,9 @@ namespace TLVPark.Mapping
     {
         public BusinessMap()
         {
-            Id(x => x.FacebookId);
-            HasMany(x => x.RecommendedParkings).Cascade.All();
+            Table("Businesses");
+            Id(x => x.FacebookId).GeneratedBy.Assigned();
+            HasManyToMany(x => x.RecommendedParkings).AsBag().Cascade.All();
             Map(x => x.BusinessType);
         }
     }

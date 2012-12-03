@@ -7,6 +7,7 @@ using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Web.Configuration;
 using TLVPark.DataAccess;
+using TLVPark.DataAccess.FacebookQuerying;
 using TLVPark.Model;
 
 namespace TLVPark
@@ -57,8 +58,8 @@ namespace TLVPark
         [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "Business?businessId={businessId}&businessType={businessType}")]
         public List<Parking> GetParkingsByBusiness(string businessId, string businessType)
         {
-            int id;
-            if (!int.TryParse(businessId, out id))
+            long id;
+            if (!long.TryParse(businessId, out id))
             {
                 WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.BadRequest;
                 return null;
@@ -68,7 +69,33 @@ namespace TLVPark
             {
                 parkings = dataAccess.GetParkingByBusiness(id).ToList();
             }
-            // TODO: Add more logic
+            if (!parkings.Any())
+            {
+                using (var query = FacebookQueryFactory.CreateQuery())
+                {
+                    var dictionary =
+                        query.Select("latitude", "longitude").From(FacebookTable.Place).WhereId(id).Execute();
+                    if (dictionary == null)
+                    {
+                        WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound("Business not found");
+                        return null;
+                    }
+                    var geo = new GeoPoint(double.Parse(dictionary["longitude"]), double.Parse(dictionary["latitude"]));
+                    using (var dataAccess = new ParkingDataAccess())
+                    {
+                        parkings = dataAccess.GetParkingsByGeo(geo, 1000, 10).ToList();
+                        var business = new Business()
+                            {
+                                BusinessType = BusinessType.Facebook,
+                                FacebookId = id,
+                            };
+                        
+                        parkings.ForEach(business.RecommendedParkings.Add);
+                        dataAccess.AddBusiness(business);
+                    }
+                }
+                
+            }
             return parkings;
         }
 

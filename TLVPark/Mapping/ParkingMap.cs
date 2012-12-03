@@ -7,6 +7,7 @@ namespace TLVPark.Mapping
     {
         public ParkingMap()
         {
+            Table("Parkings");
             Id(x => x.ID);
             Map(x => x.Name).Length(40).Not.Nullable();
             Map(x => x.Capacity);
@@ -14,6 +15,7 @@ namespace TLVPark.Mapping
             Map(x => x.Longtitude);
             Map(x => x.StreetName);
             Map(x => x.HouseNumber).Length(10);
+            HasManyToMany(x => x.Businesses).AsBag().Inverse();
         }
     }
 }

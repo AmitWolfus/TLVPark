@@ -20,12 +20,12 @@ namespace TLVPark.Model
         /// Gets and sets the Facebook unique id of the business
         /// </summary>
         [DataMember]
-        public virtual int FacebookId { get; set; }
+        public virtual long FacebookId { get; set; }
         /// <summary>
         /// Gets the list of the recommended parkings for this business
         /// </summary>
         [DataMember]
-        public virtual List<Parking> RecommendedParkings { get; protected set; }
+        public virtual IList<Parking> RecommendedParkings { get; protected set; }
         
         [DataMember]
         public virtual BusinessType BusinessType { get; set; }

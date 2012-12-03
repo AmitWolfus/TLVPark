@@ -54,7 +54,13 @@ namespace TLVPark.DataAccess
 
         public IEnumerable<Parking> GetParkingsByGeo(GeoPoint point, double radius)
         {
-            var list = new List<Parking>();
+            return GetParkingsByGeo(point, radius, -1);
+        }
+
+        public IEnumerable<Parking> GetParkingsByGeo(GeoPoint point, double radius, int parkingsToTake)
+        {
+            var parkings = new List<DistanceParking>();
+
             // Go over all the parkings and calculate the distance
             foreach (var parking in ParkingCache.Values)
             {
@@ -62,14 +68,37 @@ namespace TLVPark.DataAccess
                 var distance = location.Distance(point);
                 if (distance <= radius)
                 {
-                    list.Add(parking);
+                    parkings.Add(new DistanceParking(){Distance = distance, Parking = parking});
                 }
             }
-            return list;
+
+            if (parkingsToTake < 0)
+            {
+                return parkings.Select(dist => dist.Parking);
+            }
+            else
+            {
+                parkings.Sort(new DistanceComparer());
+                return parkings.Take(parkingsToTake > parkings.Count ? parkings.Count : parkingsToTake).Select(dist => dist.Parking);
+            }
         }
 
-        public IEnumerable<Parking> GetParkingByBusiness(int businessId)
+        public void AddBusiness(Business business)
         {
+            using (var session = _sessionFactory.OpenSession())
+            {
+                using (var trans = session.BeginTransaction())
+                {
+                    session.Save(business);
+                    trans.Commit();
+                }
+                session.Close();
+            }
+        }
+
+        public IEnumerable<Parking> GetParkingByBusiness(long businessId)
+        {
+            IEnumerable<Parking> recommended;
             using (var session = _sessionFactory.OpenSession())
             {
                 using (var trans = session.BeginTransaction())
@@ -81,7 +110,7 @@ namespace TLVPark.DataAccess
                                .List<Business>()
                                .FirstOrDefault();
                     // Return the recommended parkings for the business or an empty list if there are non available
-                    return business == null ? new List<Parking>() :
+                    recommended =  business == null ? new List<Parking>() :
                         business.RecommendedParkings.Select(
                             parking =>
                             new Parking
@@ -93,10 +122,12 @@ namespace TLVPark.DataAccess
                                 Latitude = parking.Latitude,
                                 StreetName = parking.StreetName,
                                 HouseNumber = parking.HouseNumber
-                            });
+                            }).ToList();
 
                 }
+                session.Close();
             }
+            return recommended;
         }
 
         #endregion
@@ -142,6 +173,42 @@ namespace TLVPark.DataAccess
                 }
             }
             return dictionary;
+        }
+
+        #endregion
+
+        #region Distance Comparer
+
+        private struct DistanceParking
+        {
+            public double Distance { get; set; }
+            public Parking Parking { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                return obj is DistanceParking && Equals((DistanceParking) obj);
+            }
+            public bool Equals(DistanceParking other)
+            {
+                return Parking.ID == other.Parking.ID;
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return (Distance.GetHashCode() * 397) ^ (Parking != null ? Parking.GetHashCode() : 0);
+                }
+            }
+        }
+
+        private class DistanceComparer : IComparer<DistanceParking>
+        {
+            public int Compare(DistanceParking x, DistanceParking y)
+            {
+                return x.Distance == y.Distance ? 0 : x.Distance < y.Distance ? -1 : 1;
+            }
         }
 
         #endregion
