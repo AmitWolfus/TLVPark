@@ -17,7 +17,7 @@ namespace TLVPark
     {
         #region IParkingService Methods
 
-        [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "Parkings?latitude={latitude}&longtitude={longtitude}&radius={radius}")]
+        [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "Parkings?latitude={latitude}&longtitude={longtitude}&radius={radius}")]
         public List<Parking> GetParkingsByGeo(string latitude, string longtitude, string radius)
         {
             // Convert the request parameters into the right type
@@ -55,7 +55,7 @@ namespace TLVPark
             }
         }
 
-        [WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "Business?businessId={businessId}&businessType={businessType}")]
+        [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "Business?businessId={businessId}&businessType={businessType}")]
         public List<Parking> GetParkingsByBusiness(string businessId, string businessType)
         {
             long id;

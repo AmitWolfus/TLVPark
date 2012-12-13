@@ -3,6 +3,15 @@ using System.Runtime.Serialization;
 
 namespace TLVPark.Model
 {
+    [DataContract]
+    public enum ParkingState
+    {
+        Empty = 0,
+        Medium = 1,
+        Busy = 3,
+        Full = 4
+    }
+
     /// <summary>
     /// Represents a public parking space
     /// </summary>
@@ -47,6 +56,9 @@ namespace TLVPark.Model
         /// </summary>
         [DataMember]
         public virtual string HouseNumber { get; set; }
+
+        [DataMember]
+        public virtual ParkingState CurrentState { get; set; }
 
         public virtual IList<Business> Businesses { get; set; }
 
