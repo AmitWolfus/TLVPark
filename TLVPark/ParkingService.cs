@@ -99,6 +99,35 @@ namespace TLVPark
             return parkings;
         }
 
+        [WebInvoke(Method = "PUT", UriTemplate = "Parking?id={id}&state={state}")]
+        public void ReportStateForParking(string id, string state)
+        {
+            int identifier;
+            if (!int.TryParse(id, out identifier))
+            {
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.BadRequest;
+            }
+            ParkingState currState;
+            if (!Enum.TryParse(state, out currState))
+            {
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.BadRequest;
+            }
+            try
+            {
+                using (var dataAccess = new ParkingDataAccess())
+                {
+                    // Set the status
+                    dataAccess.SetStatusForParking(identifier, currState);
+                }
+                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.OK;
+            }
+            catch (KeyNotFoundException)
+            {
+                // Given parking does not exist
+                WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound("Unable to find parking with the given id");
+            }
+        }
+
         #endregion
     }
 }

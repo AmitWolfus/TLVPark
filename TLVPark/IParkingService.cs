@@ -24,5 +24,12 @@ namespace TLVPark
         /// <returns>The availavle parkings</returns>
         [OperationContract]
         List<Parking> GetParkingsByBusiness(string businessId, string businessType);
+        /// <summary>
+        /// Reports the current state for a parking
+        /// </summary>
+        /// <param name="id">The parking's id</param>
+        /// <param name="state">The current state of the parking</param>
+        [OperationContract]
+        void ReportStateForParking(string id, string state);
     }
 }

@@ -130,6 +130,32 @@ namespace TLVPark.DataAccess
             return recommended;
         }
 
+        public void SetStatusForParking(int id, ParkingState state)
+        {
+            if (!_parkingsCache.Value.ContainsKey(id))
+            {
+                throw new KeyNotFoundException(string.Format("Parking with id {0} doesn't exist", id));
+            }
+            // Get the parking
+            var parking = _parkingsCache.Value[id];
+            // Change the state of the parking
+            lock (parking)
+            {
+                parking.CurrentState = state;
+            }
+            using (var session = _sessionFactory.OpenSession())
+            {
+                using (var trans = session.BeginTransaction())
+                {
+                    var dbPark = session.CreateCriteria<Parking>().Add(Restrictions.IdEq(id)).List<Parking>().FirstOrDefault();
+                    dbPark.CurrentState = state;
+                    session.SaveOrUpdate(dbPark);
+                    trans.Commit();
+                }
+                session.Close();
+            }
+        }
+
         #endregion
 
         #region IDisposable Members

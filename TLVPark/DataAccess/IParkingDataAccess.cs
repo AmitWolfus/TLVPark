@@ -29,5 +29,11 @@ namespace TLVPark.DataAccess
         /// <param name="businessId">The id of the business</param>
         /// <returns>The parkings for the given business</returns>
         IEnumerable<Parking> GetParkingByBusiness(long businessId);
+        /// <summary>
+        /// Reports the current state for a parking
+        /// </summary>
+        /// <param name="id">The parking's id</param>
+        /// <param name="state">The current state of the parking</param>
+        void SetStatusForParking(int id, ParkingState state);
     }
 }
