@@ -106,11 +106,13 @@ namespace TLVPark
             if (!int.TryParse(id, out identifier))
             {
                 WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.BadRequest;
+                return;
             }
             ParkingState currState;
             if (!Enum.TryParse(state, out currState))
             {
                 WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.BadRequest;
+                return;
             }
             try
             {
