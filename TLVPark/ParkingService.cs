@@ -99,7 +99,7 @@ namespace TLVPark
             return parkings;
         }
 
-        [WebInvoke(Method = "PUT", UriTemplate = "Parking?id={id}&state={state}")]
+        [WebInvoke(Method = "PUT", UriTemplate = "Parking?id={id}&state={state}", RequestFormat = WebMessageFormat.Json)]
         public void ReportStateForParking(string id, string state)
         {
             int identifier;
