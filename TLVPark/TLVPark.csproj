@@ -94,6 +94,7 @@
     <Compile Include="IParkingService.cs" />
     <Compile Include="Mapping\BusinessMap.cs" />
     <Compile Include="Mapping\ParkingMap.cs" />
+    <Compile Include="Mapping\ParkingStateUserType.cs" />
     <Compile Include="Model\Business.cs" />
     <Compile Include="Model\GeoPoint.cs" />
     <Compile Include="Model\Parking.cs" />

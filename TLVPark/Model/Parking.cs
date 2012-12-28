@@ -8,8 +8,8 @@ namespace TLVPark.Model
     {
         Empty = 0,
         Medium = 1,
-        Busy = 3,
-        Full = 4
+        Busy = 2,
+        Full = 3
     }
 
     /// <summary>

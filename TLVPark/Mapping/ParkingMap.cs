@@ -15,6 +15,7 @@ namespace TLVPark.Mapping
             Map(x => x.Longtitude);
             Map(x => x.StreetName);
             Map(x => x.HouseNumber).Length(10);
+            Map(x => x.CurrentState).CustomType<ParkingStateUserType>();
             HasManyToMany(x => x.Businesses).AsBag().Inverse();
         }
     }

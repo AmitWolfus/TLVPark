@@ -192,7 +192,8 @@ namespace TLVPark.DataAccess
                             Longtitude = parking.Longtitude,
                             Name = parking.Name,
                             StreetName = parking.StreetName,
-                            HouseNumber = parking.HouseNumber
+                            HouseNumber = parking.HouseNumber,
+                            CurrentState = parking.CurrentState,
                         };
                         dictionary.Add(statelessParking.ID, statelessParking);
                     }
