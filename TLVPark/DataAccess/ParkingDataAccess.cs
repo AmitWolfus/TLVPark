@@ -121,7 +121,8 @@ namespace TLVPark.DataAccess
                                 Longtitude = parking.Longtitude,
                                 Latitude = parking.Latitude,
                                 StreetName = parking.StreetName,
-                                HouseNumber = parking.HouseNumber
+                                HouseNumber = parking.HouseNumber,
+                                CurrentState = parking.CurrentState,
                             }).ToList();
 
                 }
